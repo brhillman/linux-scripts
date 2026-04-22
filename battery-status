@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Old simple version used capacity, which is percentage of original capacity.
+# This is not an accurate representation of current usable capacity for aged
+# batteries with reduced capacity
+#echo "Battery: $(cat /sys/class/power_supply/BAT0/capacity)% ($(cat /sys/class/power_supply/BAT0/status))"
+
+BAT=/sys/class/power_supply/BAT0
+
+if [[ -f $BAT/energy_now ]]; then
+    now=$(cat $BAT/energy_now)
+    full=$(cat $BAT/energy_full)
+else
+    now=$(cat $BAT/charge_now)
+    full=$(cat $BAT/charge_full)
+fi
+
+status=$(cat $BAT/status)
+
+pct=$(( 100 * now / full ))
+
+echo "Battery: ${pct}% (${status})"
